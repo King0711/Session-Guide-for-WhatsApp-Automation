@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automating Your WhatsApp with a Chatbot — Session Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-page:        #0c0e12;
+      --bg-card:        #15181e;
+      --bg-secondary:   #23272f;
+      --bg-muted:       #1f2229;
+      --text-primary:   #e7ebef;
+      --text-muted:     #7b899d;
+      --teal:           #19e6d4;
+      --purple:         #8d52e0;
+      --green:          #26d971;
+      --border:         #272c35;
+      --gradient-primary: linear-gradient(135deg, #19e6d4, #8d52e0);
+      --gradient-card:    linear-gradient(145deg, #16191f, #111317);
+      --glow-soft:   0 0 20px rgba(25, 230, 212, 0.15);
+      --glow-strong: 0 0 40px rgba(25, 230, 212, 0.25);
+      --font: 'Space Grotesk', sans-serif;
+      --radius-card: 0.75rem;
+      --radius-pill: 999px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-page);
+      color: var(--text-primary);
+      font-family: var(--font);
+      line-height: 1.7;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(12, 14, 18, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    nav .nav-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    nav .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    nav .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    nav .nav-links a:hover { color: var(--teal); }
+
+    /* HERO */
+    .hero {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 80px 2rem 60px;
+      border-bottom: 1px solid var(--border);
+    }
+    .session-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .hero h1 span {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      max-width: 600px;
+    }
+    .hero-meta {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    .meta-item .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    /* MAIN CONTENT */
+    .content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* DELIVERABLES BOX */
+    .deliverables {
+      background: var(--gradient-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--teal);
+      border-radius: var(--radius-card);
+      padding: 2rem;
+      margin: 3rem 0;
+    }
+    .deliverables .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .deliverables ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .deliverables ul li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+    }
+    .deliverables ul li::before {
+      content: "✓";
+      color: var(--teal);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    /* SECTION */
+    .section {
+      padding: 3.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .section-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--bg-page);
+      background: var(--teal);
+      padding: 0.2rem 0.7rem;
+      border-radius: var(--radius-pill);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+    .section-badge.intro { background: var(--bg-secondary); color: var(--text-muted); }
+    .section-badge.read  { background: var(--purple); color: #fff; }
+    .section-badge.wrap  { background: var(--green); color: var(--bg-page); }
+
+    .section-time {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+    .section h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .section .section-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.75rem;
+    }
+
+    /* STEPS */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .step {
+      display: flex;
+      gap: 1.25rem;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--teal);
+      margin-top: 0.1rem;
+    }
+    .step-body { flex: 1; }
+    .step-body p { font-size: 0.95rem; margin-bottom: 0.5rem; }
+    .step-body p strong { color: var(--text-primary); }
+
+    /* CODE BLOCK */
+    .code-block {
+      background: #0a0c0f;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1rem 1.25rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      color: var(--teal);
+      overflow-x: auto;
+      margin: 0.75rem 0;
+      position: relative;
+    }
+    .code-block .code-label {
+      font-family: var(--font);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    /* ALERT CARDS */
+    .alert {
+      display: flex;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+    .alert.trouble {
+      background: rgba(141, 82, 224, 0.08);
+      border: 1px solid rgba(141, 82, 224, 0.25);
+      color: var(--text-primary);
+    }
+    .alert.trouble .alert-icon { color: var(--purple); font-size: 1rem; }
+    .alert.tip {
+      background: rgba(25, 230, 212, 0.06);
+      border: 1px solid rgba(25, 230, 212, 0.2);
+    }
+    .alert.tip .alert-icon { color: var(--teal); }
+    .alert.warning {
+      background: rgba(255, 180, 0, 0.06);
+      border: 1px solid rgba(255, 180, 0, 0.2);
+      color: var(--text-primary);
+    }
+    .alert.warning .alert-icon { color: #ffb400; }
+    .alert-body strong { display: block; margin-bottom: 0.25rem; }
+
+    /* CONCEPTS LIST */
+    .concepts {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .concept-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--gradient-card);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .concept-item::before {
+      content: "◆";
+      color: var(--teal);
+      font-size: 0.6rem;
+      flex-shrink: 0;
+    }
+
+    /* FURTHER */
+    .go-further {
+      margin-top: 1.5rem;
+      padding: 1rem 1.25rem;
+      background: rgba(25, 230, 212, 0.04);
+      border: 1px dashed rgba(25, 230, 212, 0.2);
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    .go-further strong { color: var(--teal); display: block; margin-bottom: 0.25rem; }
+
+    /* COMPLETE BADGE */
+    .complete-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 0.4rem 1rem;
+      font-size: 0.8rem;
+      color: var(--teal);
+      font-weight: 600;
+    }
+
+    /* SUMMARY GRID */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .summary-card {
+      background: var(--gradient-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.25rem;
+      transition: box-shadow 0.2s;
+    }
+    .summary-card:hover { box-shadow: var(--glow-strong); }
+    .summary-card .card-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .summary-card h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+    .summary-card p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* FILES TABLE */
+    .file-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+    }
+    .file-table th {
+      text-align: left;
+      padding: 0.6rem 1rem;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .file-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .file-table td:first-child {
+      font-family: 'Courier New', monospace;
+      color: var(--teal);
+      white-space: nowrap;
+    }
+    .file-table td:last-child { color: var(--text-muted); }
+
+    /* FOOTER */
+    footer {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    footer p { font-size: 0.8rem; color: var(--text-muted); }
+    .next-session {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--teal);
+      color: var(--bg-page);
+      font-weight: 700;
+      font-size: 0.875rem;
+      padding: 0.6rem 1.25rem;
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+    }
+
+    /* DIVIDER */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.5rem 0;
+    }
+
+    /* PILL TAGS */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .tag {
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      border-radius: var(--radius-pill);
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    /* PROGRESS BAR */
+    .phases-bar {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 3rem;
+      margin-top: 2rem;
+    }
+    .phase-pip {
+      flex: 1;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--border);
+    }
+    .phase-pip.done { background: var(--teal); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-label">Session Guide</span>
+  <ul class="nav-links">
+    <li><a href="#intro">Intro</a></li>
+    <li><a href="#phase1">Phase 1</a></li>
+    <li><a href="#phase2">Phase 2</a></li>
+    <li><a href="#phase3">Phase 3</a></li>
+    <li><a href="#phase4">Phase 4</a></li>
+    <li><a href="#phase5">Phase 5</a></li>
+    <li><a href="#wrapup">Wrap Up</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="session-badge">Session Guide · WhatsApp Automation</span>
+  <h1>Automating Your WhatsApp<br /><span>with a Chatbot</span></h1>
+  <p class="subtitle">Build a personal AI bot that replies to your WhatsApp messages in your exact voice — using your real chat history to capture your tone, slang, and style.</p>
+  <div class="hero-meta">
+    <div class="meta-item"><span class="dot"></span> ~2 hours total</div>
+    <div class="meta-item"><span class="dot"></span> 5 phases</div>
+    <div class="meta-item"><span class="dot"></span> Node.js + Groq AI</div>
+    <div class="meta-item"><span class="dot"></span> Deploys to Railway (free)</div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- DELIVERABLES -->
+  <div class="deliverables">
+    <p class="eyebrow">By the end of this session</p>
+    <ul>
+      <li>A WhatsApp bot that auto-replies to all incoming messages</li>
+      <li>A persona file built from your real chat history — so it sounds like you</li>
+      <li>Anti-AI-tell rules baked in so replies feel human, not robotic</li>
+      <li>The bot deployed and running 24/7 on a free Railway server</li>
+      <li>A log file that flags sensitive messages for your personal review</li>
+    </ul>
+  </div>
+
+  <!-- INTRO -->
+  <div class="section" id="intro">
+    <div class="section-header">
+      <span class="section-badge intro">INTRO</span>
+      <span class="section-time">10 min</span>
+    </div>
+    <h2>What You Need & How This Works</h2>
+    <p class="section-desc">Before building, understand what the bot does and what you need to have ready.</p>
+
+    <p style="font-size:0.95rem; margin-bottom:1.25rem;">This bot connects to your WhatsApp via QR scan (like WhatsApp Web), listens for incoming messages, and uses Groq AI — loaded with your personal writing style — to reply on your behalf. Every reply passes through a human-voice filter so it doesn't sound AI-generated.</p>
+
+    <div class="alert tip">
+      <span class="alert-icon">⚡</span>
+      <div class="alert-body">
+        <strong>What you need before starting</strong>
+        A Windows PC · Google Chrome installed · A WhatsApp account on your phone · A GitHub account (free at github.com) · A Groq account (free at console.groq.com)
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <p style="font-size:0.875rem; color: var(--text-muted); margin-bottom:1rem;"><strong style="color:var(--text-primary)">How the bot works — end to end:</strong></p>
+    <div class="concepts">
+      <div class="concept-item">Someone messages you → bot receives it via WhatsApp Web connection</div>
+      <div class="concept-item">Message is sent to Groq AI with your persona loaded as the system prompt</div>
+      <div class="concept-item">Groq generates a reply in your voice (3–8 second human delay)</div>
+      <div class="concept-item">Reply is sent back — the contact has no idea it's automated</div>
+      <div class="concept-item">Everything is logged to bot.log, sensitive messages flagged for you</div>
+    </div>
+
+    <div class="alert warning" style="margin-top:1.5rem;">
+      <span class="alert-icon">⚠️</span>
+      <div class="alert-body">
+        <strong>Important limits to know upfront</strong>
+        The bot handles text only — it skips voice notes, images, stickers, and videos. It won't know your real schedule or personal commitments. Check bot.log daily for ⚠️ HUMAN REVIEW NEEDED flags.
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="section" id="phase1">
+    <div class="section-header">
+      <span class="section-badge">PHASE 1</span>
+      <span class="section-time">15 min</span>
+    </div>
+    <h2>Foundation — Install Node.js & Dependencies</h2>
+    <p class="section-desc">Get the tools your computer needs to run the bot.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <p>Go to <strong>nodejs.org</strong> and download the <strong>LTS version</strong> (the left/recommended button). Run the installer, click Next through everything using default options. When it asks about "Install tools for Native Modules" — check that box.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <p>Once installed, close and reopen your terminal. Verify Node is working:</p>
+          <div class="code-block"><span class="code-label">terminal</span>node --version</div>
+          <p style="font-size:0.85rem; color:var(--text-muted);">You should see something like v20.x.x or v24.x.x</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <p>Open your project folder in the terminal. In File Explorer, navigate to your project folder, click the address bar, type <strong>cmd</strong>, and press Enter.</p>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.4rem;">Your terminal should show the full project path — not C:\Windows\System32</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <p>Install all bot dependencies:</p>
+          <div class="code-block"><span class="code-label">terminal</span>npm install</div>
+          <p style="font-size:0.85rem; color:var(--text-muted);">Takes 1–3 minutes. You'll see packages being added. The important ending line is: <em>found 0 vulnerabilities</em>. Yellow warnings are normal — ignore them.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert trouble" style="margin-top:1.5rem;">
+      <span class="alert-icon">🔧</span>
+      <div class="alert-body">
+        <strong>Troubleshooting</strong>
+        If npm install gives a MODULE_NOT_FOUND error — you're in the wrong folder. Use the File Explorer method above to open the terminal directly inside the project folder.
+      </div>
+    </div>
+
+    <div class="complete-badge">✓ Phase 1 complete</div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="section" id="phase2">
+    <div class="section-header">
+      <span class="section-badge">PHASE 2</span>
+      <span class="section-time">5 min</span>
+    </div>
+    <h2>Get Your Free Groq API Key</h2>
+    <p class="section-desc">Connect the bot to Groq AI — completely free, no credit card needed.</p>
+
+    <div class="alert tip" style="margin-bottom:1.5rem;">
+      <span class="alert-icon">💡</span>
+      <div class="alert-body">
+        <strong>Why Groq and not Google Gemini or Anthropic?</strong>
+        Groq offers a genuinely free API tier that works in Nigeria. Gemini's free tier has a limit of 0 in certain regions. Anthropic requires payment upfront. Groq's Llama model is fast, capable, and costs nothing for personal use.
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <p>Go to <strong>console.groq.com</strong> and sign up with your Google account.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <p>Click <strong>"API Keys"</strong> in the left sidebar → <strong>"Create API key"</strong>. Copy the key — it starts with <code style="color:var(--teal);">gsk_...</code></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <p>In your project folder, copy <strong>.env.example</strong> and rename the copy to <strong>.env</strong> (just .env — no "example"). Open it in Notepad and fill in:</p>
+          <div class="code-block">
+            <span class="code-label">.env</span>
+GROQ_API_KEY=gsk_your_key_here
+YOUR_NAME=line upon line
+GROQ_MODEL=llama-3.3-70b-versatile
+REPLY_IN_GROUPS=false
+          </div>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.4rem;">Replace <code style="color:var(--teal);">line upon line</code> with whatever name appears in your WhatsApp chat exports. You'll confirm this in Phase 3.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <p>Verify the key loaded correctly:</p>
+          <div class="code-block"><span class="code-label">terminal — run from project folder</span>node -e "require('dotenv').config(); const k = process.env.GROQ_API_KEY; console.log(k ? 'Key loaded: ' + k.slice(0,8) + '...' : 'Key not found')"</div>
+          <p style="font-size:0.85rem; color:var(--text-muted);">You should see: <em>Key loaded: gsk_XXXX...</em></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert trouble">
+      <span class="alert-icon">🔧</span>
+      <div class="alert-body">
+        <strong>MODULE_NOT_FOUND on the verify command?</strong>
+        Your terminal is in the wrong folder — the dotenv package doesn't exist there. Navigate back to the project folder first using: <code style="color:var(--teal);">cd "C:\Users\DELL\OneDrive\Documents\Claude\Projects\My whatsapp automation"</code>
+      </div>
+    </div>
+
+    <div class="complete-badge">✓ Phase 2 complete</div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="section" id="phase3">
+    <div class="section-header">
+      <span class="section-badge">PHASE 3</span>
+      <span class="section-time">20 min</span>
+    </div>
+    <h2>Teach the Bot Your Voice</h2>
+    <p class="section-desc">This is the most important phase. The bot is only as good as the persona you feed it.</p>
+
+    <p style="font-size:0.95rem; margin-bottom:1.5rem;">We export your real WhatsApp chats, extract only your messages, and send them to Groq AI which analyzes your tone, vocabulary, emoji use, sentence style, and slang — then writes a detailed persona prompt saved to <code style="color:var(--teal);">persona.txt</code>.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <p><strong>Export WhatsApp chats from your phone.</strong> For each chat you want to export:</p>
+          <p style="margin-top:0.5rem; font-size:0.875rem; color:var(--text-muted);">Open WhatsApp → any chat → tap the 3-dot menu → <strong>More</strong> → <strong>Export chat</strong> → <strong>Without Media</strong></p>
+          <p style="margin-top:0.5rem; font-size:0.875rem; color:var(--text-muted);">Send the .zip file to yourself via email or Google Drive. Download it, unzip it — you'll find a .txt file inside. Aim for <strong>3–5 different chats</strong> where you write a lot (friends, family, colleagues).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <p>Create a folder called <strong>chats</strong> inside your project folder. Drop all your .txt files there.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <p>Run the parser to extract your messages:</p>
+          <div class="code-block"><span class="code-label">terminal</span>node parse-chats.js</div>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.4rem;">You should see: <em>✅ Parsed X messages from you.</em> — the more messages the better. 200+ is good; 1000+ is excellent.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <p>Generate your persona:</p>
+          <div class="code-block"><span class="code-label">terminal</span>node generate-persona.js</div>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.4rem;">Takes ~15 seconds. Groq analyzes 200 of your messages and writes a detailed persona file saved to <code style="color:var(--teal);">persona.txt</code>. Open it in Notepad and read it — add anything it missed.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <p><strong>Review and improve persona.txt.</strong> Open it in Notepad and manually add any habits the AI missed. For example:</p>
+          <div class="code-block" style="color: var(--text-muted);">
+- When someone asks for money, decline warmly but firmly<br/>
+- Never discuss politics or gossip about others<br/>
+- With close friends, skip formal greetings entirely<br/>
+- Always respond to spiritual questions with encouragement
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert trouble">
+      <span class="alert-icon">🔧</span>
+      <div class="alert-body">
+        <strong>Could not find any messages from "your name"?</strong>
+        Open one of your .txt chat files and look at the left side of a message you sent. That exact name (e.g. "line upon line") is what you need to set in YOUR_NAME in your .env file. The parser is case-sensitive and whitespace-sensitive — trim any trailing spaces.
+      </div>
+    </div>
+
+    <div class="alert trouble">
+      <span class="alert-icon">🔧</span>
+      <div class="alert-body">
+        <strong>Senders found but still 0 messages?</strong>
+        Your chat export uses 24-hour time (e.g. 15:12) instead of 12-hour (3:12 PM). The parser handles both formats — make sure you're using the latest version of parse-chats.js from this session.
+      </div>
+    </div>
+
+    <div class="go-further">
+      <strong>→ Go further</strong>
+      Re-run generate-persona.js any time you want to refresh the persona. Add more .txt chat files to the /chats folder first for a richer result. The more variety (different people, different contexts), the better it captures your full range.
+    </div>
+
+    <div class="complete-badge">✓ Phase 3 complete</div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="section" id="phase4">
+    <div class="section-header">
+      <span class="section-badge">PHASE 4</span>
+      <span class="section-time">5 min</span>
+    </div>
+    <h2>Go Live — Scan QR & Test</h2>
+    <p class="section-desc">Connect the bot to your WhatsApp and confirm it replies in your voice.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <p>Start the bot:</p>
+          <div class="code-block"><span class="code-label">terminal</span>node index.js</div>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.4rem;">A QR code will appear in the terminal within 10–15 seconds.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <p>On your phone: open WhatsApp → <strong>Settings → Linked Devices → Link a Device</strong>. Scan the QR code. You have about 60 seconds before it expires — if it does, a new one appears automatically.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <p>Wait for the terminal to show:</p>
+          <div class="code-block" style="color:var(--teal);">🤖 Bot is ready! It will now reply to incoming messages.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <p><strong>Test it.</strong> Have a friend or second phone send your number a message. Watch the terminal — you'll see it log the incoming message and the reply. Check if the reply sounds like you.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <p>If the reply doesn't sound right, stop the bot (<strong>Ctrl+C</strong>), edit <code style="color:var(--teal);">persona.txt</code>, and restart with <code style="color:var(--teal);">node index.js</code>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert trouble">
+      <span class="alert-icon">🔧</span>
+      <div class="alert-body">
+        <strong>Could not find Chrome error?</strong>
+        The bot looks for Chrome in your Program Files. If you have Chrome installed in a non-default location, add this line to your .env file: <code style="color:var(--teal);">CHROME_PATH=C:\path\to\chrome.exe</code>
+      </div>
+    </div>
+
+    <div class="alert trouble">
+      <span class="alert-icon">🔧</span>
+      <div class="alert-body">
+        <strong>Puppeteer trying to download Chrome?</strong>
+        Do NOT let it download — it can take hours and often fails. The bot is configured to use your installed Chrome automatically. If it still tries to download, cancel it (Ctrl+C) and check that your Chrome is installed at the standard path.
+      </div>
+    </div>
+
+    <div class="complete-badge">✓ Phase 4 complete</div>
+  </div>
+
+  <!-- PHASE 5 -->
+  <div class="section" id="phase5">
+    <div class="section-header">
+      <span class="section-badge">PHASE 5</span>
+      <span class="section-time">30 min</span>
+    </div>
+    <h2>Deploy 24/7 to Railway</h2>
+    <p class="section-desc">Push your code to GitHub and deploy to Railway so the bot runs even when your laptop is off.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <p><strong>Install Git</strong> from <strong>git-scm.com/download/win</strong>. Run the installer with all default options. Close and reopen your terminal after installation.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <p>Set your Git identity (do this once):</p>
+          <div class="code-block">
+            <span class="code-label">terminal</span>
+git config --global user.email "your@email.com"<br/>
+git config --global user.name "Your Name"
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <p><strong>Create a private GitHub repo</strong> at <strong>github.com/new</strong>. Name it <code style="color:var(--teal);">whatsapp-ai-bot</code>. Set it to <strong>Private</strong>. Do NOT initialize with README or .gitignore.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <p>Push your code to GitHub:</p>
+          <div class="code-block">
+            <span class="code-label">terminal — run each line separately</span>
+git init<br/>
+git add .<br/>
+git commit -m "Initial bot setup"<br/>
+git branch -M main<br/>
+git remote add origin https://github.com/YOUR_USERNAME/whatsapp-ai-bot.git<br/>
+git push -u origin main
+          </div>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.5rem;">When asked for a password, use a GitHub Personal Access Token (not your password). Get one at <strong>github.com/settings/tokens/new</strong> — tick the <strong>repo</strong> scope, set No Expiration.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <p><strong>Upload your WhatsApp session</strong> so Railway can stay logged in:</p>
+          <div class="code-block">
+            <span class="code-label">terminal</span>
+git add -f .wa-session<br/>
+git commit -m "Add WhatsApp session"<br/>
+git push
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <p><strong>Deploy to Railway.</strong> Go to <strong>railway.app</strong> → sign in with GitHub → <strong>New Project → GitHub Repository</strong> → select <code style="color:var(--teal);">whatsapp-ai-bot</code> → Deploy Now.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-body">
+          <p><strong>Add your environment variables in Railway.</strong> Click your service → <strong>Variables</strong> tab. Add:</p>
+          <div class="code-block" style="color:var(--text-muted);">
+GROQ_API_KEY        → your gsk_... key<br/>
+GROQ_MODEL          → llama-3.3-70b-versatile<br/>
+YOUR_NAME           → line upon line (or your name)<br/>
+REPLY_IN_GROUPS     → false<br/>
+MIN_REPLY_DELAY_MS  → 3000<br/>
+MAX_REPLY_DELAY_MS  → 8000<br/>
+CONTEXT_WINDOW      → 10
+          </div>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.5rem;">Save changes — Railway redeploys automatically.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">8</div>
+        <div class="step-body">
+          <p>Go to <strong>Deployments</strong> tab and wait for <code style="color:var(--teal);">Deployment successful</code>. Then click <strong>Deploy Logs</strong> — you should see:</p>
+          <div class="code-block" style="color:var(--teal);">WhatsApp authenticated ✅<br/>🤖 Bot is ready! It will now reply to incoming messages.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert trouble">
+      <span class="alert-icon">🔧</span>
+      <div class="alert-body">
+        <strong>Railway crashes with GROQ_API_KEY missing?</strong>
+        The variables weren't saved before deployment. Go to Variables tab, confirm the key is there, save, and it will redeploy automatically.
+      </div>
+    </div>
+
+    <div class="alert trouble">
+      <span class="alert-icon">🔧</span>
+      <div class="alert-body">
+        <strong>QR code shows in Railway logs but can't scan it?</strong>
+        Terminal QR codes in Railway logs are often too distorted to scan. The better approach: run the bot locally first (<code style="color:var(--teal);">node index.js</code>), scan the QR in your terminal, wait for "Bot is ready", then stop it (Ctrl+C). The session is now saved in <code style="color:var(--teal);">.wa-session/</code>. Push that to GitHub with <code style="color:var(--teal);">git add -f .wa-session</code> and Railway will use it automatically — no QR scan needed on the server.
+      </div>
+    </div>
+
+    <div class="go-further">
+      <strong>→ Go further — keep it updated</strong>
+      Any time you improve persona.txt or change the code, push updates to Railway with: <code style="color:var(--teal);">git add . && git commit -m "update" && git push</code>. Railway redeploys automatically within 1–2 minutes.
+    </div>
+
+    <div class="complete-badge">✓ Phase 5 complete — bot is live 24/7</div>
+  </div>
+
+  <!-- WRAP UP -->
+  <div class="section" id="wrapup">
+    <div class="section-header">
+      <span class="section-badge wrap">WRAP UP</span>
+      <span class="section-time">5 min</span>
+    </div>
+    <h2>What You Built & Daily Habits</h2>
+    <p class="section-desc">You now have a fully autonomous WhatsApp presence. Here's how to keep it running well.</p>
+
+    <p style="font-size:0.875rem; color:var(--text-muted); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.1em; font-weight:600;">What you built today</p>
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="card-icon">🤖</div>
+        <h4>WhatsApp Bot</h4>
+        <p>Auto-replies to all incoming messages with a 3–8 second human delay. Text only.</p>
+      </div>
+      <div class="summary-card">
+        <div class="card-icon">🧠</div>
+        <h4>Persona File</h4>
+        <p>persona.txt — your AI personality built from real messages. Edit it anytime to improve replies.</p>
+      </div>
+      <div class="summary-card">
+        <div class="card-icon">✍️</div>
+        <h4>Anti-AI Voice Rules</h4>
+        <p>Baked-in humanize-writing rules that strip AI tells from every reply before it sends.</p>
+      </div>
+      <div class="summary-card">
+        <div class="card-icon">🚀</div>
+        <h4>24/7 Deployment</h4>
+        <p>Running on Railway's free tier. Keeps going even when your laptop is off.</p>
+      </div>
+      <div class="summary-card">
+        <div class="card-icon">📋</div>
+        <h4>Activity Log</h4>
+        <p>bot.log records every message and reply. Flags sensitive messages for your attention.</p>
+      </div>
+      <div class="summary-card">
+        <div class="card-icon">🔒</div>
+        <h4>Private GitHub Repo</h4>
+        <p>Your code lives safely in a private repo. Push updates anytime to redeploy.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <p style="font-size:0.875rem; color:var(--text-muted); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.1em; font-weight:600;">Project files reference</p>
+    <table class="file-table">
+      <tr><th>File</th><th>Purpose</th></tr>
+      <tr><td>index.js</td><td>Main bot — handles WhatsApp connection and message replies</td></tr>
+      <tr><td>persona.txt</td><td>Your AI personality — edit this to improve how the bot sounds</td></tr>
+      <tr><td>parse-chats.js</td><td>Extracts your messages from exported WhatsApp .txt files</td></tr>
+      <tr><td>generate-persona.js</td><td>Sends your messages to Groq and writes persona.txt</td></tr>
+      <tr><td>.env</td><td>Your API key and configuration — never push this to GitHub</td></tr>
+      <tr><td>bot.log</td><td>Full activity log — check daily for ⚠️ HUMAN REVIEW NEEDED flags</td></tr>
+      <tr><td>.wa-session/</td><td>Saved WhatsApp login — keeps the bot authenticated</td></tr>
+      <tr><td>chats/</td><td>Your exported WhatsApp .txt files — used for persona generation</td></tr>
+    </table>
+
+    <div class="divider"></div>
+
+    <p style="font-size:0.875rem; color:var(--text-muted); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.1em; font-weight:600;">Daily habits to keep it sharp</p>
+    <div class="concepts">
+      <div class="concept-item">Check bot.log once a day — look for ⚠️ HUMAN REVIEW NEEDED and follow up personally</div>
+      <div class="concept-item">If replies sound off — edit persona.txt and push with: git add . && git commit -m "update persona" && git push</div>
+      <div class="concept-item">To stop the bot locally: Ctrl+C in terminal. To restart: node index.js (no QR scan needed)</div>
+      <div class="concept-item">Re-run generate-persona.js after adding more chat exports to deepen the persona</div>
+      <div class="concept-item">Add contacts to IGNORE_LIST in .env for anyone the bot should never auto-reply to</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="tags">
+      <span class="tag">whatsapp-web.js</span>
+      <span class="tag">Groq API</span>
+      <span class="tag">Llama 3.3 70B</span>
+      <span class="tag">Node.js</span>
+      <span class="tag">Railway</span>
+      <span class="tag">GitHub</span>
+      <span class="tag">Puppeteer</span>
+      <span class="tag">Persona Engineering</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>Built by Samuel King · Session Guide · June 2026</p>
+  <a class="next-session" href="#">Next Session →</a>
+</footer>
+
+</body>
+</html>
